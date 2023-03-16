@@ -2,16 +2,17 @@
 #include <stdlib.h>
 #include <time.h>
 
-#define GRID_SIZE 116 
+#define GRID_SIZE 81 
 
 void initialize_grid(int grid[GRID_SIZE][GRID_SIZE]) {
 
     // Seed random number generator with current time:
     srand(time(NULL));
-    for (int i = 0; i < GRID_SIZE/5; i++) {
-        for (int j = 0; j < GRID_SIZE/5; j++) {
+    for (int i = 0; i < GRID_SIZE/6; i++) {
+        for (int j = 0; j < GRID_SIZE/6; j++) {
             // Set each cell to a random state (0 or 1):
-            grid[i][j] = rand() % 2;
+            //grid[i][j] = rand() % 2;
+            grid[i][j] = rand();
         }
     }
 }
@@ -38,13 +39,51 @@ void print_grid(int grid[GRID_SIZE][GRID_SIZE]) {
     }
 }
 
+int count_spaces(int grid[GRID_SIZE][GRID_SIZE], int row, int col) {
+    int count = 0;
+    for (int i = row - 1; i <= row + 1; i++) {
+        for (int j = col - 1; j <= col + 1; j++) {
+            if (i >= 0 && i < GRID_SIZE && j >= 0 && j < GRID_SIZE && !(i == row && j == col)) {
+                if (grid[i][j] == 0)  // count spaces
+                    count++;
+            }
+        }
+    }
+    return count;
+}
+
+int count_cells(int grid[GRID_SIZE][GRID_SIZE], int row, int col) {
+    int count = 0;
+    for (int i = row - 1; i <= row + 1; i++) {
+        for (int j = col - 1; j <= col + 1; j++) {
+            if (i >= 0 && i < GRID_SIZE && j >= 0 && j < GRID_SIZE && !(i == row && j == col)) {
+                if (grid[i][j] != 0)  // count cells
+                    count++;
+            }
+        }
+    }
+    return count;
+}
+
 int count_healthy_neighbors(int grid[GRID_SIZE][GRID_SIZE], int row, int col) {
     int count = 0;
     for (int i = row - 1; i <= row + 1; i++) {
         for (int j = col - 1; j <= col + 1; j++) {
             if (i >= 0 && i < GRID_SIZE && j >= 0 && j < GRID_SIZE && !(i == row && j == col)) {
-                //if (grid[i][j] == 1 || grid[i][j] == 2)  // count living and dying cells
                 if (grid[i][j] == 1 || grid[i][j] == 2 || grid[i][j] == -1)  // count living and dying cells
+                    count++;
+            }
+        }
+    }
+    return count;
+}
+
+int count_too_many_cells(int grid[GRID_SIZE][GRID_SIZE], int row, int col) {
+    int count = 0;
+    for (int i = row - 1; i <= row + 1; i++) {
+        for (int j = col - 1; j <= col + 1; j++) {
+            if (i >= 0 && i < GRID_SIZE && j >= 0 && j < GRID_SIZE && !(i == row && j == col)) {
+                if (grid[i][j] == 1 && grid[i][j] == -1 && grid [i][j] == 2 && grid[i][j] == 3)  // count living and dying cells
                     count++;
             }
         }
@@ -67,16 +106,22 @@ int count_old_neighbors(int grid[GRID_SIZE][GRID_SIZE], int row, int col) {
 
 void update_grid(int grid[GRID_SIZE][GRID_SIZE]) {
     int new_grid[GRID_SIZE][GRID_SIZE];
+	int count;
 	
 	// calculate the new state of each cell based on its neighbors
     for (int i = 0; i < GRID_SIZE; i++) {
         for (int j = 0; j < GRID_SIZE; j++) {
-            int count = count_healthy_neighbors(grid, i, j);
+			int cells_number = count_cells(grid, i, j);
+			int space_number = count_spaces(grid, i, j);
+			if (space_number > cells_number * 1.6) 
+            	count = count_healthy_neighbors(grid, i, j);
+			if (space_number < cells_number) 
+            	count = count_too_many_cells(grid, i, j);
             int count_old = count_old_neighbors(grid, i, j);
             if (grid[i][j] == 0) 
 			{ 
-                //if (count == 3 || count_old > 3)
-                if (count == 3 || count == 6 || count_old >= 3)
+                if (count == 3 || count_old > 3)
+                //if (count == 3 || count == 6 || count_old >= 3)
                     new_grid[i][j] = 3; // mark as new
 				else
 					new_grid[i][j] = 0;
@@ -112,7 +157,6 @@ int main() {
 	int	grid[GRID_SIZE][GRID_SIZE];
     initialize_grid(grid);
 	{	
-		write(1, "\n\n", 2);
 		print_grid(grid);
 		while (1)
 		{
