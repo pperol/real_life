@@ -1,40 +1,76 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <time.h>
+#include "./mlx/mlx.h"
 
-#define GRID_SIZE 81 
+#define GRID_SIZE 115
 
-void initialize_grid(int grid[GRID_SIZE][GRID_SIZE]) {
+void	initialize_grid(int grid[GRID_SIZE][GRID_SIZE])
+{
+	int	i;
+	int	j;
+	int	count;
+	int num_to_fill;
 
-    // Seed random number generator with current time:
+	count = 0;
+	// Seed the random number generator
     srand(time(NULL));
-    for (int i = 0; i < GRID_SIZE/6; i++) {
-        for (int j = 0; j < GRID_SIZE/6; j++) {
-            // Set each cell to a random state (0 or 1):
-            //grid[i][j] = rand() % 2;
-            grid[i][j] = rand();
+
+	// Calculate the number of elements to fill
+    num_to_fill = GRID_SIZE * GRID_SIZE / 6;
+
+    // Loop through the grid and fill the required number of elements
+    i = 0;
+	while (i < GRID_SIZE) 
+	{
+        j = 0;
+		while (j < GRID_SIZE) 
+		{
+            // try also %4 or %5 etc.
+			if (count < num_to_fill && rand() % 4 == 0) 
+			{
+                // Fill this element with a random number from (-1) 0 to 3
+                grid[i][j] = rand() % 5 - 1;
+                //grid[i][j] = rand() % 5;
+                count++;
+            } 
+			else 
+                // Otherwise, fill with 0
+                grid[i][j] = 0;
+           j++;
         }
+		i++;
     }
 }
 
-void print_grid(int grid[GRID_SIZE][GRID_SIZE]) {
-    for (int i = 0; i < GRID_SIZE; i++) {
-        for (int j = 0; j < GRID_SIZE; j++) {
-            if (grid[i][j] == 1)
-                // living cell
+void	print_grid(int grid[GRID_SIZE][GRID_SIZE]) 
+{
+	int i;
+	int j;
+
+	i = 0;
+	while (i < GRID_SIZE)
+	{
+		j = 0;
+		while (j < GRID_SIZE)
+		{
+			if (grid[i][j] == 1)
+				// living cell
 				write(1, "#", 1);
-            else if (grid[i][j] == 2)
-                // new cell
+			else if (grid[i][j] == 2)
+				// growing cell
 				write(1, "O", 1);
-            else if (grid[i][j] == -1)
-                // dying cell
+			else if (grid[i][j] == -1)
+				// dying cell
 				write(1, "+", 1);
-            else if (grid[i][j] == 3)
-               // new born cell
+			else if (grid[i][j] == 3)
+				// new born cell
 				write(1, "o", 1);
-            else
+			else
 				write(1, " ", 1);
-        }
+			j++;
+		}
+		i++;
 		write(1, "\n", 1);
     }
 }
@@ -120,7 +156,7 @@ void update_grid(int grid[GRID_SIZE][GRID_SIZE]) {
             int count_old = count_old_neighbors(grid, i, j);
             if (grid[i][j] == 0) 
 			{ 
-                if (count == 3 || count_old > 3)
+                if (count == 3 || count == 5 || count_old > 3)
                 //if (count == 3 || count == 6 || count_old >= 3)
                     new_grid[i][j] = 3; // mark as new
 				else
@@ -149,7 +185,7 @@ void update_grid(int grid[GRID_SIZE][GRID_SIZE]) {
             grid[i][j] = new_grid[i][j];
         }
     }
-	usleep(50000);
+	usleep(77000);
 }
 
 
