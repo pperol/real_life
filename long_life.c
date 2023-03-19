@@ -75,88 +75,166 @@ void	print_grid(int grid[GRID_SIZE][GRID_SIZE])
     }
 }
 
-int count_spaces(int grid[GRID_SIZE][GRID_SIZE], int row, int col) {
-    int count = 0;
-    for (int i = row - 1; i <= row + 1; i++) {
-        for (int j = col - 1; j <= col + 1; j++) {
-            if (i >= 0 && i < GRID_SIZE && j >= 0 && j < GRID_SIZE && !(i == row && j == col)) {
-                if (grid[i][j] == 0)  // count spaces
-                    count++;
-            }
-        }
-    }
-    return count;
-}
-
-int count_cells(int grid[GRID_SIZE][GRID_SIZE], int row, int col) {
-    int count = 0;
-    for (int i = row - 1; i <= row + 1; i++) {
-        for (int j = col - 1; j <= col + 1; j++) {
-            if (i >= 0 && i < GRID_SIZE && j >= 0 && j < GRID_SIZE && !(i == row && j == col)) {
-                if (grid[i][j] != 0)  // count cells
-                    count++;
-            }
-        }
-    }
-    return count;
-}
-
-int count_healthy_neighbors(int grid[GRID_SIZE][GRID_SIZE], int row, int col) {
-    int count = 0;
-    for (int i = row - 1; i <= row + 1; i++) {
-        for (int j = col - 1; j <= col + 1; j++) {
-            if (i >= 0 && i < GRID_SIZE && j >= 0 && j < GRID_SIZE && !(i == row && j == col)) {
-                if (grid[i][j] == 1 || grid[i][j] == 2 || grid[i][j] == -1)  // count living and dying cells
-                    count++;
-            }
-        }
-    }
-    return count;
-}
-
-int count_too_many_cells(int grid[GRID_SIZE][GRID_SIZE], int row, int col) {
-    int count = 0;
-    for (int i = row - 1; i <= row + 1; i++) {
-        for (int j = col - 1; j <= col + 1; j++) {
-            if (i >= 0 && i < GRID_SIZE && j >= 0 && j < GRID_SIZE && !(i == row && j == col)) {
-                if (grid[i][j] == 1 && grid[i][j] == -1 && grid [i][j] == 2 && grid[i][j] == 3)  // count living and dying cells
-                    count++;
-            }
-        }
-    }
-    return count;
-}
-
-int count_old_neighbors(int grid[GRID_SIZE][GRID_SIZE], int row, int col) {
-    int count = 0;
-    for (int i = row - 1; i <= row + 1; i++) {
-        for (int j = col - 1; j <= col + 1; j++) {
-            if (i >= 0 && i < GRID_SIZE && j >= 0 && j < GRID_SIZE && !(i == row && j == col)) {
-                if (grid[i][j] == -1)  // count living and dying cells
-                    count++;
-            }
-        }
-    }
-    return count;
-}
-
-void update_grid(int grid[GRID_SIZE][GRID_SIZE]) {
-    int new_grid[GRID_SIZE][GRID_SIZE];
+int	count_spaces(int grid[GRID_SIZE][GRID_SIZE], int row, int col) 
+{
 	int count;
+	int i;
+	int j;
+
+	count  = 0;
+	i = row - 1;
+	while (i <= row + 1)
+	{
+		j = col - 1;
+		while (j <= col + 1)
+		{		
+			if (i >= 0 && i < GRID_SIZE && j >= 0 && j < GRID_SIZE && !(i == row && j == col)) 
+			{
+                // count spaces:
+                if (grid[i][j] == 0)
+                    count++;
+            }
+			j++;
+        }
+		i++;
+    }
+    return (count);
+}
+
+int	count_cells(int grid[GRID_SIZE][GRID_SIZE], int row, int col) 
+{
+	int count;
+	int i;
+	int j;
+
+	count  = 0;
+	i = row - 1;
+	while (i <= row + 1)
+	{
+		j = col - 1;
+		while (j <= col + 1)
+		{		
+			if (i >= 0 && i < GRID_SIZE && j >= 0 && j < GRID_SIZE && !(i == row && j == col)) 
+			{
+                // count cells:
+                if (grid[i][j] != 0)
+                    count++;
+            }
+			j++;
+        }
+		i++;
+    }
+    return (count);
+}
+
+int	count_healthy_neighbors(int grid[GRID_SIZE][GRID_SIZE], int row, int col)
+{
+	int count;
+	int i;
+	int j;
+
+	count  = 0;
+	i = row - 1;
+	while (i <= row + 1)
+	{
+		j = col - 1;
+		while (j <= col + 1)
+		{		
+			if (i >= 0 && i < GRID_SIZE && j >= 0 && j < GRID_SIZE && !(i == row && j == col)) 
+			{
+				if (grid[i][j] == 1 || grid[i][j] == 2 || grid[i][j] == -1)
+				// count fertile cells
+                    count++;
+            }
+			j++;
+        }
+		i++;
+    }
+    return (count);
+}
+
+int	count_too_many_cells(int grid[GRID_SIZE][GRID_SIZE], int row, int col)
+{
+	int count;
+	int i;
+	int j;
+
+	count  = 0;
+	i = row - 1;
+	while (i <= row + 1)
+	{
+		j = col - 1;
+		while (j <= col + 1)
+		{		
+			if (i >= 0 && i < GRID_SIZE && j >= 0 && j < GRID_SIZE && !(i == row && j == col)) 
+			{
+				if (grid[i][j] == 1 && grid[i][j] == -1 && grid [i][j] == 2 && grid[i][j] == 3)
+				// count total cells
+                    count++;
+            }
+			j++;
+        }
+		i++;
+    }
+    return (count);
+}
+
+int	count_old_neighbors(int grid[GRID_SIZE][GRID_SIZE], int row, int col) 
+{
+	int count;
+	int i;
+	int j;
+
+	count  = 0;
+	i = row - 1;
+	while (i <= row + 1)
+	{
+		j = col - 1;
+		while (j <= col + 1)
+		{		
+			if (i >= 0 && i < GRID_SIZE && j >= 0 && j < GRID_SIZE && !(i == row && j == col)) 
+			{
+				if (grid[i][j] == -1)
+				// count dying cells
+                    count++;
+            }
+			j++;
+        }
+		i++;
+    }
+    return (count);
+}
+
+void update_grid(int grid[GRID_SIZE][GRID_SIZE])
+{
+	int new_grid[GRID_SIZE][GRID_SIZE];
+	int count;
+	int	cells_number;
+	int	space_number;
+    int count_old;
+	int i;
+	int j;
+	int n;
+	int m;
 	
 	// calculate the new state of each cell based on its neighbors
-    for (int i = 0; i < GRID_SIZE; i++) {
-        for (int j = 0; j < GRID_SIZE; j++) {
-			int cells_number = count_cells(grid, i, j);
-			int space_number = count_spaces(grid, i, j);
+	i = 0; 
+    while (i < GRID_SIZE) 
+	{
+		j = 0;
+		//for (int j = 0; j < GRID_SIZE; j++) {
+		while(j < GRID_SIZE) 
+		{
+			cells_number = count_cells(grid, i, j);
+			space_number = count_spaces(grid, i, j);
 			if (space_number > cells_number * 1.6) 
             	count = count_healthy_neighbors(grid, i, j);
 			if (space_number < cells_number) 
             	count = count_too_many_cells(grid, i, j);
-            int count_old = count_old_neighbors(grid, i, j);
+            	count_old = count_old_neighbors(grid, i, j);
             if (grid[i][j] == 0) 
 			{ 
-                if (count == 3 || count == 5 || count_old > 3)
+                if (count == 3 || count_old > 3)
                 //if (count == 3 || count == 6 || count_old >= 3)
                     new_grid[i][j] = 3; // mark as new
 				else
@@ -169,36 +247,44 @@ void update_grid(int grid[GRID_SIZE][GRID_SIZE]) {
 			else if (grid[i][j] == 1) // living cell
             	new_grid[i][j] = -1; // dying cell
 			else if (grid[i][j] == 2) // new cell
-                    new_grid[i][j] = 1; // mark as alive
-            else // no cell
+				new_grid[i][j] = 1; // mark as alive
+			else // no cell
 			{	
 				// living cell
-                if (count < 2 || count > 3) 
-                    new_grid[i][j] = -1; // mark as dying
+				if (count < 2 || count > 3) 
+					new_grid[i][j] = -1; // mark as dying
+					//new_grid[j][i] = -1; // mark as dying
 			}
-        }
-    }
-
+			j++;
+		}
+		i++;
+	}
 	// copy new grid to original grid
-    for (int i = 0; i < GRID_SIZE; i++) {
-        for (int j = 0; j < GRID_SIZE; j++) {
-            grid[i][j] = new_grid[i][j];
-        }
-    }
-	usleep(77000);
+	m = 0;
+    while (m < GRID_SIZE)
+	{
+		n = 0;
+		while (n < GRID_SIZE)
+		{
+            grid[m][n] = new_grid[m][n];
+			n++;
+    	}
+		m++;
+	}
+	usleep(100000);
 }
 
 
 int main() {
 	int	grid[GRID_SIZE][GRID_SIZE];
-    initialize_grid(grid);
+	initialize_grid(grid);
 	{	
 		print_grid(grid);
 		while (1)
 		{
-        	update_grid(grid);
-        	print_grid(grid);
+			update_grid(grid);
+			print_grid(grid);
     	}
 	}
-    return 0;
+    return (0);
 }
